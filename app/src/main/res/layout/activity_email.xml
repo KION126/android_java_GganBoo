@@ -23,7 +23,7 @@
         app:layout_constraintTop_toBottomOf="@+id/txtEmailCon" />
 
     <TextView
-        android:id="@+id/txtEmailTitle"
+        android:id="@+id/txtProfileTitle"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginTop="29dp"
@@ -57,6 +57,6 @@
         android:text="로 전송되었습니다.\n이메일의 링크를 탭한 후에 아래 &quot;인증하기&quot;버튼을 눌러주세요."
         app:layout_constraintBottom_toTopOf="@+id/btnEmailAuth"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/txtEmailTitle"
+        app:layout_constraintTop_toBottomOf="@+id/txtProfileTitle"
         tools:ignore="MissingConstraints" />
 </androidx.constraintlayout.widget.ConstraintLayout>

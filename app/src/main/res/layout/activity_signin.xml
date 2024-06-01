@@ -17,7 +17,7 @@
         android:layout_marginBottom="29dp"
         android:background="@drawable/button_type1"
         android:text="확인"
-        android:textColor="#BDBDBD"
+        android:textColor="#000"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="0.0"
         app:layout_constraintStart_toStartOf="parent"
