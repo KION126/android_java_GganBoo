@@ -13,10 +13,10 @@
         android:theme="@style/Theme.GganBoo"
         tools:targetApi="31">
         <activity
-            android:name=".profile.ProfileActivity"
+            android:name=".GganBooActivity"  
             android:exported="false" />
         <activity
-            android:name=".profile.profileActivity"
+            android:name=".profile.ProfileActivity"
             android:exported="false" />
         <activity
             android:name=".emailauth.EmailActivity"

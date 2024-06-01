@@ -17,7 +17,6 @@ import com.example.gganboo.databinding.ActivityMainBinding;
 public class MainActivity extends AppCompatActivity implements View.OnClickListener{
 
     private ActivityMainBinding binding;
-
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -41,7 +40,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
             Intent signIntent = new Intent(MainActivity.this, SignupActivity.class);
             startActivity(signIntent);
         } else if(v == binding.btnSignIn){
-            Intent signIntent = new Intent(MainActivity.this, SigninActivity.class);
+            Intent signIntent = new Intent(MainActivity.this, GganBooActivity.class);
             startActivity(signIntent);
         }
     }
