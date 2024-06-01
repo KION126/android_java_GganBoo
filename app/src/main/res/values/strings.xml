@@ -1,3 +1,5 @@
 <resources>
     <string name="app_name">GganBoo</string>
+    <string name="findPW"><u>비밀번호를 잊으셨나요?</u></string>
+    <string name="emailEdit"><u>이메일 변경</u></string>
 </resources>

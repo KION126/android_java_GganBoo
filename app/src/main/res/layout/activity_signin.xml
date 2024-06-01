@@ -5,7 +5,23 @@
     android:id="@+id/main"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context=".signup.SignupActivity">
+    tools:context=".signin.SigninActivity">
+
+    <Button
+        android:id="@+id/btnSigninDo"
+        android:layout_width="0dp"
+        android:layout_height="40dp"
+        android:layout_marginStart="55dp"
+        android:layout_marginTop="16dp"
+        android:layout_marginEnd="55dp"
+        android:layout_marginBottom="29dp"
+        android:background="@drawable/button_type1"
+        android:text="확인"
+        android:textColor="#BDBDBD"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.0"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/etPW" />
 
     <TextView
         android:id="@+id/txtSignin"
@@ -13,7 +29,7 @@
         android:layout_height="wrap_content"
         android:layout_marginTop="26dp"
         android:layout_marginBottom="48dp"
-        android:text="가입하기"
+        android:text="로그인"
         android:textColor="#000"
         android:textSize="20sp"
         android:textStyle="bold"
@@ -45,52 +61,25 @@
         android:layout_height="wrap_content"
         android:layout_marginStart="55dp"
         android:layout_marginEnd="55dp"
-        android:layout_marginBottom="33dp"
+        android:layout_marginBottom="40dp"
         android:ems="10"
         android:hint="비밀번호"
         android:inputType="textPassword"
         android:textColor="#5D5D5D"
         android:textColorHint="#5D5D5D"
-        app:layout_constraintBottom_toTopOf="@+id/btnSignupDo"
+        app:layout_constraintBottom_toTopOf="@+id/btnEmailAuth"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/etEmail" />
 
-    <Button
-        android:id="@+id/btnSignupDo"
-        android:layout_width="0dp"
-        android:layout_height="0dp"
-        android:layout_marginStart="55dp"
-        android:layout_marginEnd="55dp"
-        android:layout_marginBottom="117dp"
-        android:background="@drawable/button_type1"
-        android:text="확인"
-        android:textColor="#BDBDBD"
-        app:layout_constraintBottom_toTopOf="@+id/txtAssent"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/etPW" />
-
     <TextView
-        android:id="@+id/txtAssent"
+        android:id="@+id/txtFindPW"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginBottom="400dp"
-        android:text="깐부의 이용약관과 개인정보 정책에 동의하시겠습니까?"
-        android:textColor="#000"
+        android:layout_marginBottom="481dp"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/btnSignupDo" />
-
-    <androidx.appcompat.widget.AppCompatCheckBox
-        android:id="@+id/cbAssent"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginTop="20dp"
-        android:buttonTint="#000"
-        android:text="동의"
-        app:layout_constraintStart_toStartOf="@+id/txtAssent"
-        app:layout_constraintTop_toTopOf="@+id/txtAssent" />
-
+        app:layout_constraintTop_toBottomOf="@+id/btnEmailAuth"
+        android:text="@string/findPW"/>
 </androidx.constraintlayout.widget.ConstraintLayout>
