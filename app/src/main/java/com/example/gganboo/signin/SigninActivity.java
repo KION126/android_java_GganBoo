@@ -83,9 +83,13 @@ public class SigninActivity extends AppCompatActivity implements View.OnClickLis
                             }
                         }
                     } else {
-                        // 로그인 실패 원인 구분
-                        String errorCode = ((FirebaseAuthException) task.getException()).getErrorCode();
-                        handleSignInError(errorCode);
+                        Exception e = task.getException();
+                        if (e instanceof FirebaseAuthException) {
+                            String errorCode = ((FirebaseAuthException) e).getErrorCode();
+                            handleSignInError(errorCode);
+                        } else {
+                            showToast("로그인 중 오류가 발생했습니다. 다시 시도해주세요.");
+                        }
                     }
                 });
     }
@@ -116,6 +120,7 @@ public class SigninActivity extends AppCompatActivity implements View.OnClickLis
                 break;
         }
     }
+
 
     // 비밀번호 재설정 이메일 전송
     private void sendPasswordResetEmail(String email) {
