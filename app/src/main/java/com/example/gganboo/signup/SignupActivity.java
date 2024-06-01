@@ -21,6 +21,8 @@ import com.example.gganboo.R;
 import com.example.gganboo.databinding.ActivitySignupBinding;
 import com.example.gganboo.emailauth.EmailActivity;
 import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.auth.FirebaseAuthException;
+import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 
@@ -33,6 +35,10 @@ public class SignupActivity extends AppCompatActivity implements View.OnClickLis
     private boolean isPWValid = false;
     private boolean isAssentChecked = false;
 
+    // Firebase
+    private FirebaseAuth mAuth;
+    private DatabaseReference myDB_Reference;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -40,7 +46,14 @@ public class SignupActivity extends AppCompatActivity implements View.OnClickLis
         binding = ActivitySignupBinding.inflate(getLayoutInflater());
         setContentView(binding.getRoot());
 
-        initializeUI(); // UI 초기화
+        initializeFirebase();
+        initializeUI();
+    }
+
+    // Firebase 초기화
+    private void initializeFirebase() {
+        mAuth = FirebaseAuth.getInstance();
+        myDB_Reference = FirebaseDatabase.getInstance().getReference("Users");
     }
 
     // UI 초기화
@@ -110,14 +123,39 @@ public class SignupActivity extends AppCompatActivity implements View.OnClickLis
         } else if (!isAssentChecked) {
             showToast("이용약관과 개인정보 정책에 동의해주세요.");
         } else {
-            // 이메일 인증 화면으로 이동
+            // Firebase 회원가입 및 이메일 인증
             String email = binding.etEmail.getText().toString().trim();
             String password = binding.etPW.getText().toString().trim();
-            Intent intent = new Intent(SignupActivity.this, EmailActivity.class);
-            intent.putExtra("userEmail", email);
-            intent.putExtra("userPassword", password);
-            startActivity(intent);
+            mAuth.createUserWithEmailAndPassword(email, password)
+                    .addOnCompleteListener(this, task -> {
+                        if (task.isSuccessful()) {
+                            FirebaseUser currentUser = mAuth.getCurrentUser();
+                            if (currentUser != null) {
+                                sendEmailVerification(currentUser, email, password);
+                            }
+                        } else {
+                            String errorCode = ((FirebaseAuthException) task.getException()).getErrorCode();
+                            handleSignUpError(errorCode);
+                        }
+                    });
         }
+    }
+
+    // 이메일 인증 메일 보내기
+    private void sendEmailVerification(FirebaseUser user, String email, String password) {
+        user.sendEmailVerification()
+                .addOnCompleteListener(this, task -> {
+                    if (task.isSuccessful()) {
+                        // 이메일 인증 화면으로 이동
+                        Intent intent = new Intent(SignupActivity.this, EmailActivity.class);
+                        intent.putExtra("userEmail", email);
+                        intent.putExtra("userPassword", password);
+                        startActivity(intent);
+                        finish();
+                    } else {
+                        showToast("이메일 인증 메일 전송에 실패했습니다.");
+                    }
+                });
     }
 
     // Toast 출력 메서드
@@ -125,6 +163,18 @@ public class SignupActivity extends AppCompatActivity implements View.OnClickLis
         Toast toast = Toast.makeText(getApplicationContext(), message, Toast.LENGTH_SHORT);
         toast.setGravity(Gravity.CENTER, 0, 0);
         toast.show();
+    }
+
+    // 회원가입 오류코드에 따른 오류원인 출력
+    private void handleSignUpError(String errorCode) {
+        switch (errorCode) {
+            case "ERROR_EMAIL_ALREADY_IN_USE":
+                showToast("이미 가입된 이메일입니다.");
+                break;
+            default:
+                showToast("회원가입 실패: " + errorCode);
+                break;
+        }
     }
 
     // EditText(Email, PW) 유효성 검사
@@ -136,10 +186,8 @@ public class SignupActivity extends AppCompatActivity implements View.OnClickLis
         isAssentChecked = binding.cbAssent.isChecked();
 
         if (isIDValid && isPWValid && isAssentChecked) {
-            binding.btnSignupDo.setEnabled(true);
             binding.btnSignupDo.setTextColor(Color.BLACK);
         } else {
-            binding.btnSignupDo.setEnabled(false);
             binding.btnSignupDo.setTextColor(Color.rgb(189, 189, 189));
         }
     }

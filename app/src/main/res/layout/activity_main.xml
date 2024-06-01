@@ -9,43 +9,53 @@
 
     <Button
         android:id="@+id/btnSignIn"
-        android:layout_width="150dp"
-        android:layout_height="35dp"
-        android:layout_marginEnd="50dp"
-        android:layout_marginBottom="142dp"
+        android:layout_width="0dp"
+        android:layout_height="40dp"
+        android:layout_marginEnd="44dp"
+        android:layout_marginBottom="101dp"
         android:background="@drawable/button_type1"
         android:text="로그인"
         android:textColor="#000"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toEndOf="@+id/btnSignUp"
-        app:layout_constraintTop_toBottomOf="@+id/imageView"
-        app:layout_constraintVertical_bias="1.0" />
+        app:layout_constraintTop_toBottomOf="@+id/txtCon" />
 
     <Button
         android:id="@+id/btnSignUp"
-        android:layout_width="150dp"
-        android:layout_height="35dp"
-        android:layout_marginStart="62dp"
+        android:layout_width="0dp"
+        android:layout_height="40dp"
+        android:layout_marginStart="57dp"
         android:layout_marginEnd="10dp"
-        android:layout_marginBottom="142dp"
         android:background="@drawable/button_type1"
         android:text="회원가입"
         android:textColor="#000"
-        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintBaseline_toBaselineOf="@+id/btnSignIn"
         app:layout_constraintEnd_toStartOf="@+id/btnSignIn"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/imageView" />
+        app:layout_constraintStart_toStartOf="parent" />
 
     <ImageView
-        android:id="@+id/imageView"
-        android:layout_width="218dp"
-        android:layout_height="0dp"
-        android:layout_marginTop="179dp"
-        android:layout_marginBottom="132dp"
-        app:layout_constraintBottom_toTopOf="@+id/btnSignUp"
+        android:id="@+id/imageView3"
+        android:layout_width="0dp"
+        android:layout_height="383dp"
+        android:layout_marginStart="46dp"
+        android:layout_marginTop="188dp"
+        android:layout_marginEnd="46dp"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
-        tools:srcCompat="@tools:sample/avatars" />
+        app:srcCompat="@drawable/mainlogo" />
+
+    <TextView
+        android:id="@+id/txtCon"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="468dp"
+        android:layout_marginBottom="189dp"
+        android:text="자신의 계획을 공유하세요!"
+        app:layout_constraintBottom_toTopOf="@+id/btnSignIn"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
+
 </androidx.constraintlayout.widget.ConstraintLayout>
