@@ -120,6 +120,7 @@ public class SigninActivity extends AppCompatActivity implements View.OnClickLis
                     String userPassword = binding.etPW.getText().toString();
                     intent.putExtra("userEmail", userEmail);
                     intent.putExtra("userPassword", userPassword);
+                    startActivity(intent);
                     finish();
                 }
             } else {
