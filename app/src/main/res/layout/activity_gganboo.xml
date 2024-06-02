@@ -25,13 +25,14 @@
         android:background="@color/background"
         app:elevation="0dp"
         app:itemBackground="@color/background"
-        app:itemHorizontalTranslationEnabled="false"
+        app:itemIconSize="35dp"
+        app:itemIconTint="@drawable/bottom_nav_color"
+        app:itemPaddingBottom="0dp"
+        app:itemTextColor="@drawable/bottom_nav_color"
         app:labelVisibilityMode="labeled"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:itemTextColor="@drawable/bottom_nav_color"
-        app:itemIconTint="@drawable/bottom_nav_color"
         app:menu="@menu/bottom_nav_menu" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>
