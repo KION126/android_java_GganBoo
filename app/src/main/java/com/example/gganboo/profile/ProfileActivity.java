@@ -15,8 +15,10 @@ import androidx.core.graphics.Insets;
 import androidx.core.view.ViewCompat;
 import androidx.core.view.WindowInsetsCompat;
 
+import com.example.gganboo.GganBooActivity;
 import com.example.gganboo.R;
 import com.example.gganboo.databinding.ActivityProfileBinding;
+import com.example.gganboo.emailauth.EmailActivity;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.database.DatabaseReference;
@@ -132,6 +134,8 @@ public class ProfileActivity extends AppCompatActivity implements View.OnClickLi
                     .addOnCompleteListener(task -> {
                         if (task.isSuccessful()) {
                             showToast("회원가입이 완료되었습니다.");
+                            Intent intent = new Intent(ProfileActivity.this, GganBooActivity.class);
+                            startActivity(intent);
                             finish();
                         } else {
                             showToast("회원가입에 실패했습니다: " + task.getException().getMessage());

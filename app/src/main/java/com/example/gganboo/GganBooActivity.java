@@ -1,6 +1,8 @@
 package com.example.gganboo;
 
+import android.content.Intent;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.MenuItem;
 
 import androidx.activity.EdgeToEdge;
@@ -19,6 +21,7 @@ import com.example.gganboo.navbar.MyFragment;
 import com.example.gganboo.navbar.NotificationFragment;
 import com.example.gganboo.navbar.SearchFragment;
 import com.google.android.material.navigation.NavigationBarView;
+import com.google.firebase.auth.FirebaseUser;
 
 public class GganBooActivity extends AppCompatActivity implements NavigationBarView.OnItemSelectedListener {
 
@@ -31,7 +34,6 @@ public class GganBooActivity extends AppCompatActivity implements NavigationBarV
         setContentView(binding.getRoot());
         replaceFragment(new CalendarFragment());
         binding.bottomNavigationView.setOnItemSelectedListener(this);
-
         ViewCompat.setOnApplyWindowInsetsListener(findViewById(R.id.main), (v, insets) -> {
             Insets systemBars = insets.getInsets(WindowInsetsCompat.Type.systemBars());
             v.setPadding(systemBars.left, systemBars.top, systemBars.right, systemBars.bottom);

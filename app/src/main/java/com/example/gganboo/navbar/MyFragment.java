@@ -1,14 +1,20 @@
 package com.example.gganboo.navbar;
 
 import android.os.Bundle;
-
-import androidx.fragment.app.Fragment;
-
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-
+import androidx.annotation.NonNull;
+import androidx.fragment.app.Fragment;
+import com.bumptech.glide.Glide;
 import com.example.gganboo.R;
+import com.example.gganboo.databinding.FragmentMyBinding;
+import com.google.android.gms.tasks.OnCompleteListener;
+import com.google.android.gms.tasks.Task;
+import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.database.DataSnapshot;
+import com.google.firebase.database.FirebaseDatabase;
 
 /**
  * A simple {@link Fragment} subclass.
@@ -17,28 +23,16 @@ import com.example.gganboo.R;
  */
 public class MyFragment extends Fragment {
 
-    // TODO: Rename parameter arguments, choose names that match
-    // the fragment initialization parameters, e.g. ARG_ITEM_NUMBER
     private static final String ARG_PARAM1 = "param1";
     private static final String ARG_PARAM2 = "param2";
-
-    // TODO: Rename and change types of parameters
     private String mParam1;
     private String mParam2;
+    private @NonNull FragmentMyBinding binding;
 
     public MyFragment() {
         // Required empty public constructor
     }
 
-    /**
-     * Use this factory method to create a new instance of
-     * this fragment using the provided parameters.
-     *
-     * @param param1 Parameter 1.
-     * @param param2 Parameter 2.
-     * @return A new instance of fragment MyFragment.
-     */
-    // TODO: Rename and change types and number of parameters
     public static MyFragment newInstance(String param1, String param2) {
         MyFragment fragment = new MyFragment();
         Bundle args = new Bundle();
@@ -58,9 +52,40 @@ public class MyFragment extends Fragment {
     }
 
     @Override
-    public View onCreateView(LayoutInflater inflater, ViewGroup container,
-                             Bundle savedInstanceState) {
-        // Inflate the layout for this fragment
-        return inflater.inflate(R.layout.fragment_my, container, false);
+    public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
+        binding = FragmentMyBinding.inflate(inflater, container, false);
+        View view = binding.getRoot();
+
+        FirebaseDatabase database = FirebaseDatabase.getInstance();
+        String userId = FirebaseAuth.getInstance().getCurrentUser().getUid();
+
+        database.getReference("Users").child(userId).get().addOnCompleteListener(new OnCompleteListener<DataSnapshot>() {
+            @Override
+            public void onComplete(@NonNull Task<DataSnapshot> task) {
+                if (task.isSuccessful()) {
+                    DataSnapshot snapshot = task.getResult();
+                    if (snapshot.exists()) {
+                        binding.txtName.setText(snapshot.child("name").getValue(String.class));
+                        binding.txtEmail.setText(snapshot.child("email").getValue(String.class));
+                        String imageUrl = snapshot.child("imageUrl").getValue(String.class);
+                        loadProfileImage(imageUrl);
+                    } else {
+                        Log.d("firebase", "No data found");
+                    }
+                } else {
+                    Log.d("firebase", "Error getting data", task.getException());
+                }
+            }
+        });
+
+        return view;
+    }
+
+    private void loadProfileImage(String url) {
+        Glide.with(this)
+                .load(url)
+                .placeholder(R.drawable.ic_person_24)  // 로딩 중에 표시할 이미지
+                .error(R.drawable.ic_person_24)        // 로드 실패 시 표시할 이미지
+                .into(binding.imgProfileImage);
     }
 }

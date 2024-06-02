@@ -111,7 +111,8 @@ public class SigninActivity extends AppCompatActivity implements View.OnClickLis
                 if (snapshot.exists()) {
                     String name = snapshot.child("name").getValue(String.class);
                     showToast(name + "님 반갑습니다.");
-                    startActivity(new Intent(SigninActivity.this, GganBooActivity.class));
+                    Intent intent = new Intent(SigninActivity.this, GganBooActivity.class);
+                    startActivity(intent);
                     finish();
                 } else {
                     Intent intent = new Intent(SigninActivity.this, ProfileActivity.class);
@@ -185,7 +186,14 @@ public class SigninActivity extends AppCompatActivity implements View.OnClickLis
         if (v == binding.btnSigninDo) {
             String email = binding.etEmail.getText().toString().trim();
             String password = binding.etPW.getText().toString().trim();
-            signInWithEmailAndPassword(email, password);
+
+            if (email.isEmpty()){
+                showToast("이메일을 입력하세요.");
+            } else if(password.isEmpty()){
+                showToast("비민번호를 입력하세요.");
+            }else {
+                signInWithEmailAndPassword(email, password);
+            }
         }
         // 비밀번호 찾기 클릭 이벤트
         else if (v == binding.txtFindPW) {
@@ -200,8 +208,8 @@ public class SigninActivity extends AppCompatActivity implements View.OnClickLis
     // 비밀번호 재설정 처리
     private void handlePasswordReset() {
         String email = binding.etEmail.getText().toString().trim();
-        
-        // 이메일 형식이 아닐경우
+
+        // 이메일 형식이 아닐 경우
         if (!Patterns.EMAIL_ADDRESS.matcher(email).matches()) {
             showToast("이메일 형식이 아닙니다.\n 등록된 이메일을 입력해주세요.");
             return;
@@ -213,12 +221,13 @@ public class SigninActivity extends AppCompatActivity implements View.OnClickLis
                         Log.d(TAG, "fetchSignInMethodsForEmail: 성공");
                         Log.d(TAG, "Sign-in methods: " + task.getResult().getSignInMethods());
 
-                        // 해당 이메일주소가 회원목록에 없는 경우
+                        // 해당 이메일 주소가 회원 목록에 없는 경우
                         if (task.getResult() != null && task.getResult().getSignInMethods() != null && task.getResult().getSignInMethods().isEmpty()) {
                             showToast("등록되지 않은 이메일입니다.\n 이메일을 확인해주세요.");
                         }
-                        // 회원목록에 있으면 sendPasswordResetEmail메서드로 이동
+                        // 회원 목록에 있으면 sendPasswordResetEmail 메서드로 이동
                         else {
+                            showToast("등록된 이메일입니다. 비밀번호 재설정 이메일을 보냅니다.");
                             sendPasswordResetEmail(email);
                         }
                     } else {
