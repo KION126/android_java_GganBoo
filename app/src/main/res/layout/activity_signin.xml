@@ -8,18 +8,28 @@
     tools:context=".signin.SigninActivity">
 
     <Button
+        android:id="@+id/btnTest"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginBottom="34dp"
+        android:text="test"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/txtFindPW" />
+
+    <Button
         android:id="@+id/btnSigninDo"
         android:layout_width="0dp"
-        android:layout_height="40dp"
+        android:layout_height="0dp"
         android:layout_marginStart="55dp"
-        android:layout_marginTop="16dp"
         android:layout_marginEnd="55dp"
-        android:layout_marginBottom="29dp"
+        android:layout_marginBottom="63dp"
         android:background="@drawable/button_type1"
         android:text="확인"
         android:textColor="#000"
+        app:layout_constraintBottom_toTopOf="@+id/txtFindPW"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.0"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/etPW" />
 
@@ -44,7 +54,7 @@
         android:layout_height="wrap_content"
         android:layout_marginStart="55dp"
         android:layout_marginEnd="55dp"
-        android:layout_marginBottom="11dp"
+        android:layout_marginBottom="1dp"
         android:ems="10"
         android:hint="이메일"
         android:inputType="text"
@@ -61,13 +71,13 @@
         android:layout_height="wrap_content"
         android:layout_marginStart="55dp"
         android:layout_marginEnd="55dp"
-        android:layout_marginBottom="40dp"
+        android:layout_marginBottom="16dp"
         android:ems="10"
         android:hint="비밀번호"
         android:inputType="textPassword"
         android:textColor="#5D5D5D"
         android:textColorHint="#5D5D5D"
-        app:layout_constraintBottom_toTopOf="@+id/btnEmailAuth"
+        app:layout_constraintBottom_toTopOf="@+id/btnSigninDo"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/etEmail" />
@@ -76,10 +86,10 @@
         android:id="@+id/txtFindPW"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginBottom="481dp"
-        app:layout_constraintBottom_toBottomOf="parent"
+        android:layout_marginBottom="399dp"
+        android:text="@string/findPW"
+        app:layout_constraintBottom_toTopOf="@+id/btnTest"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/btnEmailAuth"
-        android:text="@string/findPW"/>
+        app:layout_constraintTop_toBottomOf="@+id/btnSigninDo" />
 </androidx.constraintlayout.widget.ConstraintLayout>

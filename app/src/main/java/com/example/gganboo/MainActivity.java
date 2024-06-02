@@ -40,7 +40,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
             Intent signIntent = new Intent(MainActivity.this, SignupActivity.class);
             startActivity(signIntent);
         } else if(v == binding.btnSignIn){
-            Intent signIntent = new Intent(MainActivity.this, GganBooActivity.class);
+            Intent signIntent = new Intent(MainActivity.this, SigninActivity.class);
             startActivity(signIntent);
         }
     }

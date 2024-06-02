@@ -15,12 +15,16 @@ import androidx.core.graphics.Insets;
 import androidx.core.view.ViewCompat;
 import androidx.core.view.WindowInsetsCompat;
 
+import com.example.gganboo.GganBooActivity;
 import com.example.gganboo.MainActivity;
 import com.example.gganboo.R;
 import com.example.gganboo.databinding.ActivitySigninBinding;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseAuthException;
 import com.google.firebase.auth.FirebaseUser;
+import com.google.firebase.database.DataSnapshot;
+import com.google.firebase.database.DatabaseReference;
+import com.google.firebase.database.FirebaseDatabase;
 
 public class SigninActivity extends AppCompatActivity implements View.OnClickListener {
 
@@ -41,6 +45,8 @@ public class SigninActivity extends AppCompatActivity implements View.OnClickLis
         binding.btnSigninDo.setOnClickListener(this);
         // 비밀번호 찾기
         binding.txtFindPW.setOnClickListener(this);
+
+        binding.btnTest.setOnClickListener(this);
 
         // Initialize Firebase Auth
         mAuth = FirebaseAuth.getInstance();
@@ -70,13 +76,11 @@ public class SigninActivity extends AppCompatActivity implements View.OnClickLis
                 .addOnCompleteListener(this, task -> {
                     if (task.isSuccessful()) {
                         FirebaseUser user = mAuth.getCurrentUser();
-
                         // 등록되어 있는 회원인지 확인
                         if (user != null) {
                             // 이메일 인증 확인
                             if (user.isEmailVerified()) {
-                                startActivity(new Intent(SigninActivity.this, MainActivity.class));
-                                finish();
+                                fetchUserName(user.getUid());
                             } else {
                                 showToast("이메일이 인증되지 않았습니다. 메일을 확인해 주세요.");
                                 mAuth.signOut();    // 로그아웃 처리
@@ -92,6 +96,29 @@ public class SigninActivity extends AppCompatActivity implements View.OnClickLis
                         }
                     }
                 });
+    }
+
+    // Realtime Database에서 사용자 이름 가져오기
+    private void fetchUserName(String uid) {
+        FirebaseDatabase database = FirebaseDatabase.getInstance();
+        DatabaseReference userRef = database.getReference("Users").child(uid);
+
+        userRef.get().addOnCompleteListener(task -> {
+            if (task.isSuccessful()) {
+                DataSnapshot snapshot = task.getResult();
+                if (snapshot.exists()) {
+                    String name = snapshot.child("name").getValue(String.class);
+                    showToast(name + "님 반갑습니다.");
+                    startActivity(new Intent(SigninActivity.this, GganBooActivity.class));
+                    finish();
+                } else {
+                    showToast("사용자 정보를 찾을 수 없습니다.");
+                }
+            } else {
+                showToast("사용자 정보를 불러오는 중 오류가 발생했습니다.");
+                Log.e(TAG, "사용자 정보 불러오기 실패", task.getException());
+            }
+        });
     }
 
     // 로그인 실패코드에 따른 실패원인 Toast 출력
@@ -154,6 +181,10 @@ public class SigninActivity extends AppCompatActivity implements View.OnClickLis
         // 비밀번호 찾기 클릭 이벤트
         else if (v == binding.txtFindPW) {
             handlePasswordReset();
+        }
+
+        else if(v == binding.btnTest){
+            signInWithEmailAndPassword("kg2001216@naver.com", "admin1!");
         }
     }
 
