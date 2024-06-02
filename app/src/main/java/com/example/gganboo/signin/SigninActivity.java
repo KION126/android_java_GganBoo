@@ -19,6 +19,8 @@ import com.example.gganboo.GganBooActivity;
 import com.example.gganboo.MainActivity;
 import com.example.gganboo.R;
 import com.example.gganboo.databinding.ActivitySigninBinding;
+import com.example.gganboo.emailauth.EmailActivity;
+import com.example.gganboo.profile.ProfileActivity;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseAuthException;
 import com.google.firebase.auth.FirebaseUser;
@@ -112,7 +114,13 @@ public class SigninActivity extends AppCompatActivity implements View.OnClickLis
                     startActivity(new Intent(SigninActivity.this, GganBooActivity.class));
                     finish();
                 } else {
-                    showToast("사용자 정보를 찾을 수 없습니다.");
+                    Intent intent = new Intent(SigninActivity.this, ProfileActivity.class);
+                    showToast("프로필 설정을 해주세요.");
+                    String userEmail = binding.etEmail.getText().toString();
+                    String userPassword = binding.etPW.getText().toString();
+                    intent.putExtra("userEmail", userEmail);
+                    intent.putExtra("userPassword", userPassword);
+                    finish();
                 }
             } else {
                 showToast("사용자 정보를 불러오는 중 오류가 발생했습니다.");
