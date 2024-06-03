@@ -1,5 +1,6 @@
 package com.example.gganboo.navbar;
 
+import android.content.Intent;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.LayoutInflater;
@@ -10,18 +11,21 @@ import androidx.fragment.app.Fragment;
 import com.bumptech.glide.Glide;
 import com.example.gganboo.R;
 import com.example.gganboo.databinding.FragmentMyBinding;
+import com.example.gganboo.follow.FollowActivity;
+import com.example.gganboo.profile.UserProfile;
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.FirebaseDatabase;
+import com.google.firebase.database.DatabaseReference;
 
 /**
  * A simple {@link Fragment} subclass.
  * Use the {@link MyFragment#newInstance} factory method to
  * create an instance of this fragment.
  */
-public class MyFragment extends Fragment {
+public class MyFragment extends Fragment implements View.OnClickListener{
 
     private static final String ARG_PARAM1 = "param1";
     private static final String ARG_PARAM2 = "param2";
@@ -56,19 +60,37 @@ public class MyFragment extends Fragment {
         binding = FragmentMyBinding.inflate(inflater, container, false);
         View view = binding.getRoot();
 
+        binding.txtFollower.setOnClickListener(this);
+        binding.txtFollowing.setOnClickListener(this);
+
+        loadData();
+
+        return view;
+    }
+
+    @Override
+    public void onResume() {
+        super.onResume();
+        loadData();  // 프래그먼트가 다시 활성화될 때 데이터를 로드합니다.
+    }
+
+    private void loadData() {
         FirebaseDatabase database = FirebaseDatabase.getInstance();
         String userId = FirebaseAuth.getInstance().getCurrentUser().getUid();
+        DatabaseReference userRef = database.getReference("Users").child(userId);
 
-        database.getReference("Users").child(userId).get().addOnCompleteListener(new OnCompleteListener<DataSnapshot>() {
+        userRef.get().addOnCompleteListener(new OnCompleteListener<DataSnapshot>() {
             @Override
             public void onComplete(@NonNull Task<DataSnapshot> task) {
                 if (task.isSuccessful()) {
                     DataSnapshot snapshot = task.getResult();
                     if (snapshot.exists()) {
-                        binding.txtName.setText(snapshot.child("name").getValue(String.class));
-                        binding.txtEmail.setText(snapshot.child("email").getValue(String.class));
-                        String imageUrl = snapshot.child("imageUrl").getValue(String.class);
-                        loadProfileImage(imageUrl);
+                        UserProfile userProfile = snapshot.getValue(UserProfile.class);
+                        if (userProfile != null) {
+                            updateUI(userProfile);
+                        } else {
+                            Log.d("firebase", "UserProfile is null");
+                        }
                     } else {
                         Log.d("firebase", "No data found");
                     }
@@ -77,8 +99,20 @@ public class MyFragment extends Fragment {
                 }
             }
         });
+    }
 
-        return view;
+    private void updateUI(UserProfile userProfile) {
+        binding.txtName.setText(userProfile.getName());
+        binding.txtEmail.setText(userProfile.getEmail());
+
+        // 팔로잉 및 팔로워 수에서 "null" 값을 제외하고 계산
+        int followingCount = userProfile.getFollowing().contains("null") ? userProfile.getFollowing().size() - 1 : userProfile.getFollowing().size();
+        int followersCount = userProfile.getFollowers().contains("null") ? userProfile.getFollowers().size() - 1 : userProfile.getFollowers().size();
+
+        binding.txtFollowing.setText("팔로잉 " + followingCount);
+        binding.txtFollower.setText("팔로워 " + followersCount);
+
+        loadProfileImage(userProfile.getImageUrl());
     }
 
     private void loadProfileImage(String url) {
@@ -87,5 +121,16 @@ public class MyFragment extends Fragment {
                 .placeholder(R.drawable.ic_person_24)  // 로딩 중에 표시할 이미지
                 .error(R.drawable.ic_person_24)        // 로드 실패 시 표시할 이미지
                 .into(binding.imgProfileImage);
+    }
+
+    @Override
+    public void onClick(View v) {
+        Intent intent = new Intent(getActivity(), FollowActivity.class);
+        if (v == binding.txtFollowing) {
+            intent.putExtra("tab", "following");
+        } else if(v == binding.txtFollower){
+            intent.putExtra("tab", "followers");
+        }
+        startActivity(intent);
     }
 }

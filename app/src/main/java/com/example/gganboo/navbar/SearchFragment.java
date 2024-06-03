@@ -1,49 +1,43 @@
 package com.example.gganboo.navbar;
 
 import android.os.Bundle;
-
+import androidx.annotation.NonNull;
 import androidx.fragment.app.Fragment;
-
+import androidx.recyclerview.widget.LinearLayoutManager;
+import android.text.Editable;
+import android.text.TextWatcher;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import com.example.gganboo.databinding.FragmentSearchBinding;
+import com.example.gganboo.profile.UserProfile;
+import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.database.DataSnapshot;
+import com.google.firebase.database.DatabaseError;
+import com.google.firebase.database.DatabaseReference;
+import com.google.firebase.database.FirebaseDatabase;
+import com.google.firebase.database.ValueEventListener;
+import java.util.ArrayList;
+import java.util.List;
 
-import com.example.gganboo.R;
-
-/**
- * A simple {@link Fragment} subclass.
- * Use the {@link SearchFragment#newInstance} factory method to
- * create an instance of this fragment.
- */
 public class SearchFragment extends Fragment {
 
-    // TODO: Rename parameter arguments, choose names that match
-    // the fragment initialization parameters, e.g. ARG_ITEM_NUMBER
-    private static final String ARG_PARAM1 = "param1";
-    private static final String ARG_PARAM2 = "param2";
-
-    // TODO: Rename and change types of parameters
-    private String mParam1;
-    private String mParam2;
+    private static final String TAG = "SearchFragment";
+    private FragmentSearchBinding binding;
+    private UserAdapter userAdapter;
+    private List<UserProfile> userList;
+    private FirebaseAuth mAuth;
+    private DatabaseReference userRef;
+    private List<String> followingList;
 
     public SearchFragment() {
-        // Required empty public constructor
+        // 기본 생성자 필요
     }
 
-    /**
-     * Use this factory method to create a new instance of
-     * this fragment using the provided parameters.
-     *
-     * @param param1 Parameter 1.
-     * @param param2 Parameter 2.
-     * @return A new instance of fragment SearchFragment.
-     */
-    // TODO: Rename and change types and number of parameters
     public static SearchFragment newInstance(String param1, String param2) {
         SearchFragment fragment = new SearchFragment();
         Bundle args = new Bundle();
-        args.putString(ARG_PARAM1, param1);
-        args.putString(ARG_PARAM2, param2);
         fragment.setArguments(args);
         return fragment;
     }
@@ -51,16 +45,205 @@ public class SearchFragment extends Fragment {
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        if (getArguments() != null) {
-            mParam1 = getArguments().getString(ARG_PARAM1);
-            mParam2 = getArguments().getString(ARG_PARAM2);
-        }
+        mAuth = FirebaseAuth.getInstance();
+        userRef = FirebaseDatabase.getInstance().getReference("Users");
+        followingList = new ArrayList<>();
     }
 
     @Override
-    public View onCreateView(LayoutInflater inflater, ViewGroup container,
-                             Bundle savedInstanceState) {
-        // Inflate the layout for this fragment
-        return inflater.inflate(R.layout.fragment_search, container, false);
+    public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
+        binding = FragmentSearchBinding.inflate(inflater, container, false);
+        View view = binding.getRoot();
+
+        // RecyclerView 설정
+        binding.recyclerView.setLayoutManager(new LinearLayoutManager(getContext()));
+        userList = new ArrayList<>();
+        String currentUserId = mAuth.getCurrentUser().getUid();
+        userAdapter = new UserAdapter(userList, new UserAdapter.FollowUserCallback() {
+            @Override
+            public void followUser(UserProfile userToFollow) {
+                handleFollowUser(userToFollow);
+            }
+
+            @Override
+            public void unfollowUser(UserProfile userToUnfollow) {
+                handleUnfollowUser(userToUnfollow);
+            }
+
+            @Override
+            public void removeFollower(UserProfile userToRemove) {
+                // SearchFragment에서는 이 메서드를 사용하지 않으므로 구현하지 않습니다.
+            }
+        }, currentUserId, followingList, false);
+        binding.recyclerView.setAdapter(userAdapter);
+
+        // 검색 입력 필드의 텍스트 변경 리스너
+        binding.etSearch.addTextChangedListener(new TextWatcher() {
+            @Override
+            public void beforeTextChanged(CharSequence s, int start, int count, int after) {}
+
+            @Override
+            public void onTextChanged(CharSequence s, int start, int before, int count) {
+                if (s.toString().isEmpty()) {
+                    userList.clear();
+                    userAdapter.notifyDataSetChanged();
+                } else {
+                    searchUsers(s.toString());
+                }
+            }
+
+            @Override
+            public void afterTextChanged(Editable s) {}
+        });
+
+        fetchFollowingUsers();
+        return view;
+    }
+
+    private void fetchFollowingUsers() {
+        String currentUserId = mAuth.getCurrentUser().getUid();
+        DatabaseReference currentUserRef = userRef.child(currentUserId).child("following");
+        currentUserRef.addValueEventListener(new ValueEventListener() {
+            @Override
+            public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
+                followingList.clear();
+                for (DataSnapshot snapshot : dataSnapshot.getChildren()) {
+                    String userId = snapshot.getValue(String.class);
+                    followingList.add(userId);
+                }
+                userAdapter.notifyDataSetChanged(); // 팔로잉 목록을 받은 후 어댑터에 알림
+            }
+
+            @Override
+            public void onCancelled(@NonNull DatabaseError databaseError) {
+                Log.e(TAG, "Failed to fetch following users", databaseError.toException());
+            }
+        });
+    }
+
+    // 사용자 검색
+    private void searchUsers(String query) {
+        userRef.addValueEventListener(new ValueEventListener() {
+            @Override
+            public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
+                userList.clear();
+                for (DataSnapshot snapshot : dataSnapshot.getChildren()) {
+                    try {
+                        UserProfile userProfile = snapshot.getValue(UserProfile.class);
+                        if (userProfile != null && userProfile.getName().toLowerCase().contains(query.toLowerCase())) {
+                            userList.add(userProfile);
+                        }
+                    } catch (Exception e) {
+                        Log.e(TAG, "Error parsing user profile", e);
+                    }
+                }
+                userAdapter.notifyDataSetChanged();
+            }
+
+            @Override
+            public void onCancelled(@NonNull DatabaseError databaseError) {
+                Log.e(TAG, "Database error", databaseError.toException());
+            }
+        });
+    }
+
+    // 팔로우 기능
+    private void handleFollowUser(UserProfile userToFollow) {
+        String currentUserId = mAuth.getCurrentUser().getUid();
+        DatabaseReference currentUserRef = userRef.child(currentUserId);
+        DatabaseReference userToFollowRef = userRef.child(userToFollow.getUserId());
+
+        // 현재 사용자의 팔로잉 목록 업데이트
+        currentUserRef.child("following").addListenerForSingleValueEvent(new ValueEventListener() {
+            @Override
+            public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
+                List<String> followingList = new ArrayList<>();
+                if (dataSnapshot.exists()) {
+                    for (DataSnapshot snapshot : dataSnapshot.getChildren()) {
+                        followingList.add(snapshot.getValue(String.class));
+                    }
+                }
+                if (!followingList.contains(userToFollow.getUserId())) {
+                    followingList.add(userToFollow.getUserId());
+                    currentUserRef.child("following").setValue(followingList);
+                }
+            }
+
+            @Override
+            public void onCancelled(@NonNull DatabaseError databaseError) {}
+        });
+
+        // 팔로우 대상 사용자의 팔로워 목록 업데이트
+        userToFollowRef.child("followers").addListenerForSingleValueEvent(new ValueEventListener() {
+            @Override
+            public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
+                List<String> followersList = new ArrayList<>();
+                if (dataSnapshot.exists()) {
+                    for (DataSnapshot snapshot : dataSnapshot.getChildren()) {
+                        followersList.add(snapshot.getValue(String.class));
+                    }
+                }
+                if (!followersList.contains(currentUserId)) {
+                    followersList.add(currentUserId);
+                    userToFollowRef.child("followers").setValue(followersList);
+                }
+            }
+
+            @Override
+            public void onCancelled(@NonNull DatabaseError databaseError) {}
+        });
+
+        followingList.add(userToFollow.getUserId());
+        userAdapter.notifyDataSetChanged();
+    }
+
+    // 언팔로우 기능
+    private void handleUnfollowUser(UserProfile userToUnfollow) {
+        String currentUserId = mAuth.getCurrentUser().getUid();
+        DatabaseReference currentUserRef = userRef.child(currentUserId);
+        DatabaseReference userToUnfollowRef = userRef.child(userToUnfollow.getUserId());
+
+        // 현재 사용자의 팔로잉 목록 업데이트
+        currentUserRef.child("following").addListenerForSingleValueEvent(new ValueEventListener() {
+            @Override
+            public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
+                List<String> followingList = new ArrayList<>();
+                if (dataSnapshot.exists()) {
+                    for (DataSnapshot snapshot : dataSnapshot.getChildren()) {
+                        followingList.add(snapshot.getValue(String.class));
+                    }
+                }
+                if (followingList.contains(userToUnfollow.getUserId())) {
+                    followingList.remove(userToUnfollow.getUserId());
+                    currentUserRef.child("following").setValue(followingList);
+                }
+            }
+
+            @Override
+            public void onCancelled(@NonNull DatabaseError databaseError) {}
+        });
+
+        // 언팔로우 대상 사용자의 팔로워 목록 업데이트
+        userToUnfollowRef.child("followers").addListenerForSingleValueEvent(new ValueEventListener() {
+            @Override
+            public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
+                List<String> followersList = new ArrayList<>();
+                if (dataSnapshot.exists()) {
+                    for (DataSnapshot snapshot : dataSnapshot.getChildren()) {
+                        followersList.add(snapshot.getValue(String.class));
+                    }
+                }
+                if (followersList.contains(currentUserId)) {
+                    followersList.remove(currentUserId);
+                    userToUnfollowRef.child("followers").setValue(followersList);
+                }
+            }
+
+            @Override
+            public void onCancelled(@NonNull DatabaseError databaseError) {}
+        });
+
+        followingList.remove(userToUnfollow.getUserId());
+        userAdapter.notifyDataSetChanged();
     }
 }

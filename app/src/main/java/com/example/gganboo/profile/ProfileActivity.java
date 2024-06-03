@@ -18,7 +18,6 @@ import androidx.core.view.WindowInsetsCompat;
 import com.example.gganboo.GganBooActivity;
 import com.example.gganboo.R;
 import com.example.gganboo.databinding.ActivityProfileBinding;
-import com.example.gganboo.emailauth.EmailActivity;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.database.DatabaseReference;
@@ -27,6 +26,8 @@ import com.google.firebase.storage.FirebaseStorage;
 import com.google.firebase.storage.StorageReference;
 
 import java.util.UUID;
+import java.util.ArrayList;
+import java.util.List;
 
 public class ProfileActivity extends AppCompatActivity implements View.OnClickListener {
 
@@ -130,6 +131,7 @@ public class ProfileActivity extends AppCompatActivity implements View.OnClickLi
         if (user != null) {
             String userId = user.getUid();
             UserProfile userProfile = new UserProfile(userId, userEmail, userName, userDescription, imageUrl);
+
             myDB_Reference.child(userId).setValue(userProfile)
                     .addOnCompleteListener(task -> {
                         if (task.isSuccessful()) {

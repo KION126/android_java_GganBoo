@@ -21,6 +21,7 @@ import com.example.gganboo.R;
 import com.example.gganboo.databinding.ActivitySigninBinding;
 import com.example.gganboo.emailauth.EmailActivity;
 import com.example.gganboo.profile.ProfileActivity;
+import com.example.gganboo.signup.SignupActivity;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseAuthException;
 import com.google.firebase.auth.FirebaseUser;
@@ -84,7 +85,8 @@ public class SigninActivity extends AppCompatActivity implements View.OnClickLis
                             if (user.isEmailVerified()) {
                                 fetchUserName(user.getUid());
                             } else {
-                                showToast("이메일이 인증되지 않았습니다. 메일을 확인해 주세요.");
+                                showToast("이메일이 인증되지 않은 계정입니다.\n이메일인증을 해주세요.");
+                                sendEmailVerification(user,email,password);
                                 mAuth.signOut();    // 로그아웃 처리
                             }
                         }
@@ -233,6 +235,21 @@ public class SigninActivity extends AppCompatActivity implements View.OnClickLis
                     } else {
                         Log.e(TAG, "fetchSignInMethodsForEmail: 실패", task.getException());
                         showToast("이메일 확인 중 오류가 발생했습니다.\n 다시 시도해주세요.");
+                    }
+                });
+    }
+    private void sendEmailVerification(FirebaseUser user, String email, String password) {
+        user.sendEmailVerification()
+                .addOnCompleteListener(this, task -> {
+                    if (task.isSuccessful()) {
+                        // 이메일 인증 화면으로 이동
+                        Intent intent = new Intent(SigninActivity.this, EmailActivity.class);
+                        intent.putExtra("userEmail", email);
+                        intent.putExtra("userPassword", password);
+                        startActivity(intent);
+                        finish();
+                    } else {
+                        showToast("이메일 인증 메일 전송에 실패했습니다.");
                     }
                 });
     }

@@ -34,6 +34,7 @@ public class GganBooActivity extends AppCompatActivity implements NavigationBarV
         setContentView(binding.getRoot());
         replaceFragment(new CalendarFragment());
         binding.bottomNavigationView.setOnItemSelectedListener(this);
+
         ViewCompat.setOnApplyWindowInsetsListener(findViewById(R.id.main), (v, insets) -> {
             Insets systemBars = insets.getInsets(WindowInsetsCompat.Type.systemBars());
             v.setPadding(systemBars.left, systemBars.top, systemBars.right, systemBars.bottom);
