@@ -1,19 +1,22 @@
 package com.example.gganboo.navbar;
 
 public class Todo {
-    private String key;
-    private String task;
+    String task;
+    String check;
 
-    public Todo(String key, String task) {
-        this.key = key;
-        this.task = task;
+    public String getCheck() {
+        return check;
     }
 
-    public String getDate() {
-        return key;
+    public void setCheck(String check) {
+        this.check = check;
     }
 
     public String getTask() {
         return task;
+    }
+
+    public void setTask(String task) {
+        this.task = task;
     }
 }

@@ -16,15 +16,15 @@
         app:mcv_firstDayOfWeek="monday"
         app:mcv_selectionColor="@color/black"
         app:mcv_selectionMode="single"
-        app:mcv_showOtherDates="all"
+        app:mcv_showOtherDates="defaults"
         app:mcv_tileSize="53dp" />
 
     <Button
         android:id="@+id/addTaskButton"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginBottom="240dp"
-        android:text="Add Task"
+        android:layout_marginBottom="8dp"
+        android:text="할 일 추가"
         app:layout_constraintBottom_toTopOf="@+id/recyclerView"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="0.498"
@@ -32,10 +32,12 @@
 
     <androidx.recyclerview.widget.RecyclerView
         android:id="@+id/recyclerView"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginStart="16dp"
-        android:layout_marginBottom="32dp"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintStart_toStartOf="parent" />
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:layout_marginStart="8dp"
+        android:layout_marginTop="468dp"
+        android:scrollbarFadeDuration="0"
+        android:scrollbars="vertical"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
 </androidx.constraintlayout.widget.ConstraintLayout>
