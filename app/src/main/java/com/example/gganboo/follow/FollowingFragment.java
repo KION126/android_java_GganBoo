@@ -148,7 +148,7 @@ public class FollowingFragment extends Fragment implements UserAdapter.FollowUse
     }
 
     private void refreshFragment() {
-        FragmentTransaction ft = getFragmentManager().beginTransaction();
-        ft.detach(this).attach(this).commit();
+        FragmentTransaction ft = getParentFragmentManager().beginTransaction();
+        ft.detach(this).attach(this).commitAllowingStateLoss();
     }
 }
