@@ -55,4 +55,5 @@ dependencies {
     implementation 'com.google.firebase:firebase-messaging:23.0.0'
     implementation 'com.squareup.picasso:picasso:2.71828'
     implementation 'com.github.prolificinteractive:material-calendarview:2.0.1'
+    implementation 'com.jakewharton.threetenabp:threetenabp:1.2.1'
 }
