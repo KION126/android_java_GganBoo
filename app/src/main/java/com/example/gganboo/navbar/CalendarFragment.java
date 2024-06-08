@@ -7,6 +7,7 @@ import android.os.Bundle;
 import androidx.annotation.NonNull;
 import androidx.fragment.app.Fragment;
 import androidx.recyclerview.widget.LinearLayoutManager;
+import androidx.recyclerview.widget.RecyclerView;
 
 import android.util.Log;
 import android.view.LayoutInflater;
@@ -49,7 +50,9 @@ public class CalendarFragment extends Fragment {
     private String mParam2;
 
     List<Todo> listTask = new ArrayList<>();
+    List<Following> listFollowing = new ArrayList<>();
     private TodoAdapter toDoAdapter;
+    private FollowingBarAdapter followingBarAdapter;
     private FragmentCalendarBinding binding;
     private CalendarDay selectedDate;
     private DatabaseReference mDatabase;
@@ -94,6 +97,7 @@ public class CalendarFragment extends Fragment {
         selectedDate = CalendarDay.today();
         mDatabase = FirebaseDatabase.getInstance().getReference();
 
+        fetchFollowings();
         fetchTasks(selectedDate);
         binding.calendarView.setOnDateChangedListener(new OnDateSelectedListener() {
             @Override
@@ -102,6 +106,11 @@ public class CalendarFragment extends Fragment {
                 fetchTasks(selectedDate);
             }
         });
+
+        followingBarAdapter = new FollowingBarAdapter(listFollowing, getContext());
+        binding.recyclerView2.setLayoutManager(new LinearLayoutManager(getContext(), RecyclerView.HORIZONTAL,false));
+        binding.recyclerView2.setAdapter(followingBarAdapter);
+
         toDoAdapter = new TodoAdapter(listTask, selectedDate);
         binding.recyclerView.setLayoutManager(new LinearLayoutManager(getContext()));
         binding.recyclerView.setAdapter(toDoAdapter);
@@ -151,7 +160,7 @@ public class CalendarFragment extends Fragment {
     }
 
     private void fetchTasks(CalendarDay date) {
-        mDatabase.child("Users").child(FirebaseAuth.getInstance().getCurrentUser().getUid()).child("tasks").child(date.getYear()+""+date.getMonth() + date.getDay()).addValueEventListener(new ValueEventListener() {
+        mDatabase.child("Users").child(FirebaseAuth.getInstance().getCurrentUser().getUid()).child("tasks").child(date.getYear() + "" + date.getMonth() + date.getDay()).addValueEventListener(new ValueEventListener() {
             @Override
             public void onDataChange(DataSnapshot dataSnapshot) {
                 listTask.clear();
@@ -178,8 +187,34 @@ public class CalendarFragment extends Fragment {
 
             }
         });
-
-
-
     }
-}
+
+        private void fetchFollowings() {
+            mDatabase.child("Users").child(FirebaseAuth.getInstance().getCurrentUser().getUid()).child("following").addValueEventListener(new ValueEventListener() {
+                @Override
+                public void onDataChange(DataSnapshot dataSnapshot) {
+                    listFollowing.clear();
+                    if (dataSnapshot.exists()) {
+                        for (DataSnapshot d : dataSnapshot.getChildren()) {
+                            String strF = d.getValue(String.class);
+                            if(strF.equals("null")) continue;
+                            Following f = new Following();
+                            f.setUid(strF);
+                            listFollowing.add(f);
+                        }
+                        followingBarAdapter.notifyDataSetChanged();
+                    } else {
+                        followingBarAdapter.notifyDataSetChanged();
+                    }
+                    followingBarAdapter = new FollowingBarAdapter(listFollowing, getContext());
+                    binding.recyclerView2.setLayoutManager(new LinearLayoutManager(getContext(), RecyclerView.HORIZONTAL,false));
+                    binding.recyclerView2.setAdapter(followingBarAdapter);
+                }
+
+                @Override
+                public void onCancelled(@NonNull DatabaseError error) {
+
+                }
+            });
+        }
+    }
