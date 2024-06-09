@@ -86,6 +86,15 @@
             app:layout_constraintBaseline_toBaselineOf="@+id/txtFollowing"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toEndOf="@+id/txtFollowing" />
+
+        <Button
+            android:id="@+id/btn_logout"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="50dp"
+            android:text="로그아웃"
+            app:layout_constraintStart_toEndOf="@id/txtFollower"
+            app:layout_constraintTop_toBottomOf="@id/txtFollower"/>
     </androidx.constraintlayout.widget.ConstraintLayout>
 
 </androidx.constraintlayout.widget.ConstraintLayout>

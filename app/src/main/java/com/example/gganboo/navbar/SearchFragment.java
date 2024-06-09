@@ -23,18 +23,19 @@ import java.util.List;
 
 public class SearchFragment extends Fragment {
 
-    private static final String TAG = "SearchFragment";
-    private FragmentSearchBinding binding;
-    private UserAdapter userAdapter;
-    private List<UserProfile> userList;
-    private FirebaseAuth mAuth;
-    private DatabaseReference userRef;
-    private List<String> followingList;
+    private static final String TAG = "SearchFragment"; // 로그 태그
+    private FragmentSearchBinding binding; // View binding을 위한 변수
+    private UserAdapter userAdapter; // 사용자 어댑터
+    private List<UserProfile> userList; // 사용자 리스트
+    private FirebaseAuth mAuth; // FirebaseAuth 인스턴스를 위한 변수
+    private DatabaseReference userRef; // Firebase Database 참조 변수
+    private List<String> followingList; // 팔로잉 리스트
 
     public SearchFragment() {
         // 기본 생성자 필요
     }
 
+    // 새 인스턴스를 생성하는 메서드
     public static SearchFragment newInstance(String param1, String param2) {
         SearchFragment fragment = new SearchFragment();
         Bundle args = new Bundle();
@@ -45,14 +46,14 @@ public class SearchFragment extends Fragment {
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        mAuth = FirebaseAuth.getInstance();
-        userRef = FirebaseDatabase.getInstance().getReference("Users");
-        followingList = new ArrayList<>();
+        mAuth = FirebaseAuth.getInstance(); // FirebaseAuth 인스턴스 초기화
+        userRef = FirebaseDatabase.getInstance().getReference("Users"); // Firebase Database 참조 초기화
+        followingList = new ArrayList<>(); // 팔로잉 리스트 초기화
     }
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
-        binding = FragmentSearchBinding.inflate(inflater, container, false);
+        binding = FragmentSearchBinding.inflate(inflater, container, false); // View binding 초기화
         View view = binding.getRoot();
 
         // RecyclerView 설정
@@ -62,12 +63,12 @@ public class SearchFragment extends Fragment {
         userAdapter = new UserAdapter(userList, new UserAdapter.FollowUserCallback() {
             @Override
             public void followUser(UserProfile userToFollow) {
-                handleFollowUser(userToFollow);
+                handleFollowUser(userToFollow); // 팔로우 처리
             }
 
             @Override
             public void unfollowUser(UserProfile userToUnfollow) {
-                handleUnfollowUser(userToUnfollow);
+                handleUnfollowUser(userToUnfollow); // 언팔로우 처리
             }
 
             @Override
@@ -75,7 +76,7 @@ public class SearchFragment extends Fragment {
                 // SearchFragment에서는 이 메서드를 사용하지 않으므로 구현하지 않습니다.
             }
         }, currentUserId, followingList, false);
-        binding.recyclerView.setAdapter(userAdapter);
+        binding.recyclerView.setAdapter(userAdapter); // 어댑터 설정
 
         // 검색 입력 필드의 텍스트 변경 리스너
         binding.etSearch.addTextChangedListener(new TextWatcher() {
@@ -85,10 +86,10 @@ public class SearchFragment extends Fragment {
             @Override
             public void onTextChanged(CharSequence s, int start, int before, int count) {
                 if (s.toString().isEmpty()) {
-                    userList.clear();
-                    userAdapter.notifyDataSetChanged();
+                    userList.clear(); // 검색어가 없으면 사용자 리스트 초기화
+                    userAdapter.notifyDataSetChanged(); // 어댑터에 변경 알림
                 } else {
-                    searchUsers(s.toString());
+                    searchUsers(s.toString()); // 사용자 검색
                 }
             }
 
@@ -96,10 +97,11 @@ public class SearchFragment extends Fragment {
             public void afterTextChanged(Editable s) {}
         });
 
-        fetchFollowingUsers();
+        fetchFollowingUsers(); // 팔로잉 사용자 가져오기
         return view;
     }
 
+    // 팔로잉 사용자를 가져오는 메서드
     private void fetchFollowingUsers() {
         String currentUserId = mAuth.getCurrentUser().getUid();
         DatabaseReference currentUserRef = userRef.child(currentUserId).child("following");
@@ -121,7 +123,7 @@ public class SearchFragment extends Fragment {
         });
     }
 
-    // 사용자 검색
+    // 사용자 검색 메서드
     private void searchUsers(String query) {
         userRef.addValueEventListener(new ValueEventListener() {
             @Override
@@ -131,13 +133,13 @@ public class SearchFragment extends Fragment {
                     try {
                         UserProfile userProfile = snapshot.getValue(UserProfile.class);
                         if (userProfile != null && userProfile.getName().toLowerCase().contains(query.toLowerCase())) {
-                            userList.add(userProfile);
+                            userList.add(userProfile); // 검색어와 일치하는 사용자를 리스트에 추가
                         }
                     } catch (Exception e) {
                         Log.e(TAG, "Error parsing user profile", e);
                     }
                 }
-                userAdapter.notifyDataSetChanged();
+                userAdapter.notifyDataSetChanged(); // 어댑터에 변경 알림
             }
 
             @Override
@@ -147,7 +149,7 @@ public class SearchFragment extends Fragment {
         });
     }
 
-    // 팔로우 기능
+    // 팔로우 처리 메서드
     private void handleFollowUser(UserProfile userToFollow) {
         String currentUserId = mAuth.getCurrentUser().getUid();
         DatabaseReference currentUserRef = userRef.child(currentUserId);
@@ -193,11 +195,11 @@ public class SearchFragment extends Fragment {
             public void onCancelled(@NonNull DatabaseError databaseError) {}
         });
 
-        followingList.add(userToFollow.getUserId());
-        userAdapter.notifyDataSetChanged();
+        followingList.add(userToFollow.getUserId()); // 팔로잉 리스트에 추가
+        userAdapter.notifyDataSetChanged(); // 어댑터에 변경 알림
     }
 
-    // 언팔로우 기능
+    // 언팔로우 처리 메서드
     private void handleUnfollowUser(UserProfile userToUnfollow) {
         String currentUserId = mAuth.getCurrentUser().getUid();
         DatabaseReference currentUserRef = userRef.child(currentUserId);
@@ -243,7 +245,7 @@ public class SearchFragment extends Fragment {
             public void onCancelled(@NonNull DatabaseError databaseError) {}
         });
 
-        followingList.remove(userToUnfollow.getUserId());
-        userAdapter.notifyDataSetChanged();
+        followingList.remove(userToUnfollow.getUserId()); // 팔로잉 리스트에서 제거
+        userAdapter.notifyDataSetChanged(); // 어댑터에 변경 알림
     }
 }

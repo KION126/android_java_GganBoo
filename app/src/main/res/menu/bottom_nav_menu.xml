@@ -7,9 +7,6 @@
     <item android:title="@string/searchNav"
         android:icon="@drawable/ic_search_24"
         android:id="@+id/searchNav"/>
-    <item android:title="@string/notification"
-        android:icon="@drawable/ic_notifications_24"
-        android:id="@+id/notificationNav"/>
     <item android:title="@string/myNav"
         android:icon="@drawable/ic_person_24"
         android:id="@+id/myNav"/>

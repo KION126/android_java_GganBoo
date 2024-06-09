@@ -23,12 +23,12 @@ import java.util.List;
 
 public class FollowingFragment extends Fragment implements UserAdapter.FollowUserCallback {
 
-    private RecyclerView recyclerView;
-    private UserAdapter userAdapter;
-    private List<UserProfile> followingList;
-    private List<String> followingUserIds;
-    private String currentUserId;
-    private DatabaseReference userRef;
+    private RecyclerView recyclerView; // 팔로잉 목록을 표시할 RecyclerView
+    private UserAdapter userAdapter; // 사용자 어댑터
+    private List<UserProfile> followingList; // 팔로잉 목록
+    private List<String> followingUserIds; // 팔로잉 유저 ID 목록
+    private String currentUserId; // 현재 사용자 ID
+    private DatabaseReference userRef; // Firebase 사용자 참조
 
     public FollowingFragment() {
         // Required empty public constructor
@@ -38,30 +38,31 @@ public class FollowingFragment extends Fragment implements UserAdapter.FollowUse
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.fragment_follow_list, container, false);
-        recyclerView = view.findViewById(R.id.recyclerView);
-        recyclerView.setLayoutManager(new LinearLayoutManager(getContext()));
-        followingList = new ArrayList<>();
-        followingUserIds = new ArrayList<>();
-        currentUserId = FirebaseAuth.getInstance().getCurrentUser().getUid();
-        userRef = FirebaseDatabase.getInstance().getReference("Users");
-        userAdapter = new UserAdapter(followingList, this, currentUserId, followingUserIds, false);
-        recyclerView.setAdapter(userAdapter);
-        loadFollowing();
+        recyclerView = view.findViewById(R.id.recyclerView); // RecyclerView 초기화
+        recyclerView.setLayoutManager(new LinearLayoutManager(getContext())); // 레이아웃 매니저 설정
+        followingList = new ArrayList<>(); // 팔로잉 목록 초기화
+        followingUserIds = new ArrayList<>(); // 팔로잉 유저 ID 목록 초기화
+        currentUserId = FirebaseAuth.getInstance().getCurrentUser().getUid(); // 현재 사용자 ID 가져오기
+        userRef = FirebaseDatabase.getInstance().getReference("Users"); // Firebase 사용자 참조 초기화
+        userAdapter = new UserAdapter(followingList, this, currentUserId, followingUserIds, false); // 사용자 어댑터 초기화
+        recyclerView.setAdapter(userAdapter); // RecyclerView에 어댑터 설정
+        loadFollowing(); // 팔로잉 목록 불러오기
         return view;
     }
 
+    // 팔로잉 목록을 불러오는 메서드
     private void loadFollowing() {
         DatabaseReference followingRef = userRef.child(currentUserId).child("following");
         followingRef.addValueEventListener(new ValueEventListener() {
             @Override
             public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
-                followingUserIds.clear();
-                followingList.clear(); // 기존 데이터를 비웁니다.
+                followingUserIds.clear(); // 기존 팔로잉 유저 ID 목록을 비움
+                followingList.clear(); // 기존 팔로잉 목록을 비움
                 for (DataSnapshot snapshot : dataSnapshot.getChildren()) {
                     String userId = snapshot.getValue(String.class);
-                    followingUserIds.add(userId);
+                    followingUserIds.add(userId); // 팔로잉 유저 ID 목록에 추가
                 }
-                loadUserProfiles();
+                loadUserProfiles(); // 팔로잉 유저 프로필 불러오기
             }
 
             @Override
@@ -69,8 +70,9 @@ public class FollowingFragment extends Fragment implements UserAdapter.FollowUse
         });
     }
 
+    // 팔로잉 유저 프로필을 불러오는 메서드
     private void loadUserProfiles() {
-        followingList.clear(); // 중복을 방지하기 위해 데이터를 비웁니다.
+        followingList.clear(); // 기존 팔로잉 목록을 비움
         for (String userId : followingUserIds) {
             DatabaseReference userRef = FirebaseDatabase.getInstance().getReference("Users").child(userId);
             userRef.addListenerForSingleValueEvent(new ValueEventListener() {
@@ -78,8 +80,8 @@ public class FollowingFragment extends Fragment implements UserAdapter.FollowUse
                 public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
                     UserProfile userProfile = dataSnapshot.getValue(UserProfile.class);
                     if (userProfile != null) {
-                        followingList.add(userProfile);
-                        userAdapter.notifyDataSetChanged();
+                        followingList.add(userProfile); // 팔로잉 목록에 추가
+                        userAdapter.notifyDataSetChanged(); // 어댑터에 변경 사항 알림
                     }
                 }
 
@@ -89,11 +91,13 @@ public class FollowingFragment extends Fragment implements UserAdapter.FollowUse
         }
     }
 
+    // 팔로우 기능 (사용되지 않음)
     @Override
     public void followUser(UserProfile userToFollow) {
         // 팔로우 기능 구현
     }
 
+    // 언팔로우 기능
     @Override
     public void unfollowUser(UserProfile userToUnfollow) {
         String currentUserId = FirebaseAuth.getInstance().getCurrentUser().getUid();
@@ -111,10 +115,10 @@ public class FollowingFragment extends Fragment implements UserAdapter.FollowUse
                     }
                 }
                 if (followingList.contains(userToUnfollow.getUserId())) {
-                    followingList.remove(userToUnfollow.getUserId());
-                    currentUserRef.child("following").setValue(followingList);
+                    followingList.remove(userToUnfollow.getUserId()); // 팔로잉 목록에서 제거
+                    currentUserRef.child("following").setValue(followingList); // Firebase에 업데이트
                 }
-                refreshFragment(); // 언팔로우 후 프래그먼트를 새로고침합니다.
+                refreshFragment(); // 언팔로우 후 프래그먼트를 새로고침
             }
 
             @Override
@@ -132,8 +136,8 @@ public class FollowingFragment extends Fragment implements UserAdapter.FollowUse
                     }
                 }
                 if (followersList.contains(currentUserId)) {
-                    followersList.remove(currentUserId);
-                    userToUnfollowRef.child("followers").setValue(followersList);
+                    followersList.remove(currentUserId); // 팔로워 목록에서 제거
+                    userToUnfollowRef.child("followers").setValue(followersList); // Firebase에 업데이트
                 }
             }
 
@@ -142,11 +146,13 @@ public class FollowingFragment extends Fragment implements UserAdapter.FollowUse
         });
     }
 
+    // 팔로워 제거 기능 (사용되지 않음)
     @Override
     public void removeFollower(UserProfile userToRemove) {
         // FollowingFragment에서는 이 메서드를 사용하지 않으므로 구현하지 않습니다.
     }
 
+    // 프래그먼트를 새로고침하는 메서드
     private void refreshFragment() {
         FragmentTransaction ft = getParentFragmentManager().beginTransaction();
         ft.detach(this).attach(this).commitAllowingStateLoss();

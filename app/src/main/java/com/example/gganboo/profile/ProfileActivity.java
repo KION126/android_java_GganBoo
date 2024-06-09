@@ -26,28 +26,26 @@ import com.google.firebase.storage.FirebaseStorage;
 import com.google.firebase.storage.StorageReference;
 
 import java.util.UUID;
-import java.util.ArrayList;
-import java.util.List;
 
 public class ProfileActivity extends AppCompatActivity implements View.OnClickListener {
 
-    private static final int PICK_IMAGE_REQUEST = 1;
+    private static final int PICK_IMAGE_REQUEST = 1; // 이미지 선택 요청 코드
 
-    private @NonNull ActivityProfileBinding binding;
-    private FirebaseAuth mAuth;
-    private DatabaseReference myDB_Reference;
-    private StorageReference storageReference;
-    private Uri imageUri;
+    private @NonNull ActivityProfileBinding binding; // View binding을 위한 변수
+    private FirebaseAuth mAuth; // FirebaseAuth 인스턴스를 위한 변수
+    private DatabaseReference myDB_Reference; // Firebase Database 참조 변수
+    private StorageReference storageReference; // Firebase Storage 참조 변수
+    private Uri imageUri; // 선택된 이미지의 URI
 
-    private String userEmail;
-    private String userPassword;
+    private String userEmail; // 사용자 이메일
+    private String userPassword; // 사용자 비밀번호
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        EdgeToEdge.enable(this);
+        EdgeToEdge.enable(this); // Edge-to-edge 디스플레이 설정
         binding = ActivityProfileBinding.inflate(getLayoutInflater());
-        setContentView(binding.getRoot());
+        setContentView(binding.getRoot()); // View binding을 통해 레이아웃 설정
 
         // Firebase 초기화
         mAuth = FirebaseAuth.getInstance();
@@ -59,8 +57,8 @@ public class ProfileActivity extends AppCompatActivity implements View.OnClickLi
         userEmail = intent.getStringExtra("userEmail");
         userPassword = intent.getStringExtra("userPassword");
 
-        binding.btnProfileSubmit.setOnClickListener(this);
-        binding.ivProfileImage.setOnClickListener(this);
+        binding.btnProfileSubmit.setOnClickListener(this); // 프로필 제출 버튼 클릭 리스너 설정
+        binding.ivProfileImage.setOnClickListener(this); // 프로필 이미지 클릭 리스너 설정
 
         ViewCompat.setOnApplyWindowInsetsListener(findViewById(R.id.main), (v, insets) -> {
             Insets systemBars = insets.getInsets(WindowInsetsCompat.Type.systemBars());
@@ -72,12 +70,13 @@ public class ProfileActivity extends AppCompatActivity implements View.OnClickLi
     @Override
     public void onClick(View v) {
         if (v == binding.btnProfileSubmit) {
-            handleProfileSubmit();
+            handleProfileSubmit(); // 프로필 제출 처리
         } else if (v == binding.ivProfileImage) {
-            openImagePicker();
+            openImagePicker(); // 이미지 선택기 열기
         }
     }
 
+    // 이미지 선택기 열기
     private void openImagePicker() {
         Intent intent = new Intent();
         intent.setType("image/*");
@@ -90,8 +89,8 @@ public class ProfileActivity extends AppCompatActivity implements View.OnClickLi
         super.onActivityResult(requestCode, resultCode, data);
 
         if (requestCode == PICK_IMAGE_REQUEST && resultCode == RESULT_OK && data != null && data.getData() != null) {
-            imageUri = data.getData();
-            binding.ivProfileImage.setImageURI(imageUri);
+            imageUri = data.getData(); // 선택된 이미지의 URI 가져오기
+            binding.ivProfileImage.setImageURI(imageUri); // 프로필 이미지 뷰에 설정
         }
     }
 
@@ -106,26 +105,28 @@ public class ProfileActivity extends AppCompatActivity implements View.OnClickLi
         }
 
         if (imageUri != null) {
-            uploadProfileImage(userName, userDescription, imageUri);
+            uploadProfileImage(userName, userDescription, imageUri); // 프로필 이미지 업로드
         } else {
             // 기본 이미지 사용
             String defaultImageUrl = "https://ibb.co/rtsnJnT";
-            saveUserToDatabase(userName, userDescription, defaultImageUrl);
+            saveUserToDatabase(userName, userDescription, defaultImageUrl); // 기본 이미지 URL 사용
         }
     }
 
+    // 프로필 이미지 업로드
     private void uploadProfileImage(String userName, String userDescription, Uri imageUri) {
         StorageReference fileReference = storageReference.child(UUID.randomUUID().toString());
         fileReference.putFile(imageUri)
                 .addOnSuccessListener(taskSnapshot -> fileReference.getDownloadUrl().addOnSuccessListener(uri -> {
                     String imageUrl = uri.toString();
-                    saveUserToDatabase(userName, userDescription, imageUrl);
+                    saveUserToDatabase(userName, userDescription, imageUrl); // 업로드된 이미지 URL 사용
                 }))
                 .addOnFailureListener(e -> {
                     showToast("프로필 사진 업로드에 실패했습니다: " + e.getMessage());
                 });
     }
 
+    // Firebase Database에 사용자 정보 저장
     private void saveUserToDatabase(String userName, String userDescription, String imageUrl) {
         FirebaseUser user = mAuth.getCurrentUser();
         if (user != null) {

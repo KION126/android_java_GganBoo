@@ -49,8 +49,6 @@ public class GganBooActivity extends AppCompatActivity implements NavigationBarV
             replaceFragment(new CalendarFragment());
         } else if (itemId == R.id.searchNav) {
             replaceFragment(new SearchFragment());
-        } else if (itemId == R.id.notificationNav) {
-            replaceFragment(new NotificationFragment());
         } else if(itemId == R.id.myNav){
             replaceFragment(new MyFragment());
         }

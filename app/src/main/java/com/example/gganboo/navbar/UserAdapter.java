@@ -15,11 +15,11 @@ import java.util.List;
 
 public class UserAdapter extends RecyclerView.Adapter<UserAdapter.ViewHolder> {
 
-    private List<UserProfile> userList;
-    private FollowUserCallback followUserCallback;
-    private String currentUserId;
-    private List<String> followingList;
-    private boolean isFollowerList;
+    private List<UserProfile> userList; // 사용자 프로필 리스트
+    private FollowUserCallback followUserCallback; // 팔로우 콜백 인터페이스
+    private String currentUserId; // 현재 사용자 ID
+    private List<String> followingList; // 팔로잉 리스트
+    private boolean isFollowerList; // 팔로워 리스트 여부
 
     public UserAdapter(List<UserProfile> userList, FollowUserCallback followUserCallback, String currentUserId, List<String> followingList, boolean isFollowerList) {
         this.userList = userList;
@@ -33,7 +33,7 @@ public class UserAdapter extends RecyclerView.Adapter<UserAdapter.ViewHolder> {
     @Override
     public ViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
         View view = LayoutInflater.from(parent.getContext()).inflate(R.layout.item_user, parent, false);
-        return new ViewHolder(view);
+        return new ViewHolder(view); // 뷰 홀더 생성
     }
 
     @Override
@@ -94,15 +94,15 @@ public class UserAdapter extends RecyclerView.Adapter<UserAdapter.ViewHolder> {
 
     @Override
     public int getItemCount() {
-        return userList.size();
+        return userList.size(); // 사용자 리스트의 크기 반환
     }
 
     public static class ViewHolder extends RecyclerView.ViewHolder {
-        public ImageView imageView;
-        public TextView nameTextView;
-        public TextView descriptionTextView;
-        public Button followButton;
-        public Button deleteButton;
+        public ImageView imageView; // 사용자 프로필 이미지
+        public TextView nameTextView; // 사용자 이름 텍스트뷰
+        public TextView descriptionTextView; // 사용자 설명 텍스트뷰
+        public Button followButton; // 팔로우 버튼
+        public Button deleteButton; // 삭제 버튼
 
         public ViewHolder(@NonNull View itemView) {
             super(itemView);
@@ -114,9 +114,10 @@ public class UserAdapter extends RecyclerView.Adapter<UserAdapter.ViewHolder> {
         }
     }
 
+    // 팔로우 콜백 인터페이스
     public interface FollowUserCallback {
-        void followUser(UserProfile userToFollow);
-        void unfollowUser(UserProfile userToUnfollow);
-        void removeFollower(UserProfile userToRemove);
+        void followUser(UserProfile userToFollow); // 팔로우 메서드
+        void unfollowUser(UserProfile userToUnfollow); // 언팔로우 메서드
+        void removeFollower(UserProfile userToRemove); // 팔로워 제거 메서드
     }
 }

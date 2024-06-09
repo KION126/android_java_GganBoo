@@ -28,7 +28,7 @@ import com.google.firebase.database.FirebaseDatabase;
 
 public class SignupActivity extends AppCompatActivity implements View.OnClickListener {
 
-    private ActivitySignupBinding binding;
+    private ActivitySignupBinding binding; // View binding을 위한 변수
 
     // 유효성 검사 변수
     private boolean isIDValid = false;
@@ -36,15 +36,15 @@ public class SignupActivity extends AppCompatActivity implements View.OnClickLis
     private boolean isAssentChecked = false;
 
     // Firebase
-    private FirebaseAuth mAuth;
-    private DatabaseReference myDB_Reference;
+    private FirebaseAuth mAuth; // FirebaseAuth 인스턴스를 위한 변수
+    private DatabaseReference myDB_Reference; // Firebase Database 참조 변수
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        EdgeToEdge.enable(this);
+        EdgeToEdge.enable(this); // Edge-to-edge 디스플레이 설정
         binding = ActivitySignupBinding.inflate(getLayoutInflater());
-        setContentView(binding.getRoot());
+        setContentView(binding.getRoot()); // View binding을 통해 레이아웃 설정
 
         initializeFirebase();
         initializeUI();
@@ -58,25 +58,23 @@ public class SignupActivity extends AppCompatActivity implements View.OnClickLis
 
     // UI 초기화
     private void initializeUI() {
-        // 회원가입 확인 버튼
+        // 회원가입 확인 버튼 클릭 리스너 설정
         binding.btnSignupDo.setOnClickListener(this);
 
-        // 동의 체크 박스
+        // 동의 체크 박스 클릭 리스너 설정
         binding.cbAssent.setOnClickListener(this);
 
-        // 아이디, 비밀번호 EditText
+        // 아이디, 비밀번호 EditText 입력값 변화 리스너 설정
         binding.etEmail.addTextChangedListener(textWatcher);
         binding.etPW.addTextChangedListener(textWatcher);
 
-        // EditText 띄어쓰기 필터 추가
+        // 띄어쓰기 필터 추가 및 적용
         InputFilter noSpaceFilter = (source, start, end, dest, dstart, dend) -> {
             if (source != null && source.toString().contains(" ")) {
                 return source.toString().replace(" ", "");
             }
             return null;
         };
-
-        // 띄어쓰기 필터 적용
         binding.etEmail.setFilters(new InputFilter[]{noSpaceFilter});
         binding.etPW.setFilters(new InputFilter[]{noSpaceFilter});
 
@@ -87,39 +85,39 @@ public class SignupActivity extends AppCompatActivity implements View.OnClickLis
         });
     }
 
-    // EditText 입력값 변화 이벤트
+    // EditText 입력값 변화 이벤트 처리
     private final TextWatcher textWatcher = new TextWatcher() {
         @Override
         public void beforeTextChanged(CharSequence s, int start, int count, int after) {}
 
         @Override
         public void onTextChanged(CharSequence s, int start, int before, int count) {
-            checkSignupButton();
+            checkSignupButton(); // 회원가입 버튼 활성화 여부 체크
         }
 
         @Override
         public void afterTextChanged(Editable s) {
-            checkSignupButton();
+            checkSignupButton(); // 회원가입 버튼 활성화 여부 체크
         }
     };
 
-    // 클릭 이벤트
+    // 클릭 이벤트 처리
     @Override
     public void onClick(View v) {
         if (v == binding.cbAssent) {
-            checkSignupButton();
+            checkSignupButton(); // 이용약관 동의 체크 상태 확인
         } else if (v == binding.btnSignupDo) {
-            handleSignup();
+            handleSignup(); // 회원가입 처리
         }
     }
 
-    // 회원가입버튼 클릭 시
+    // 회원가입 버튼 클릭 시 처리
     private void handleSignup() {
         // 유효성 확인
         if (!isIDValid) {
             showToast("이메일의 형식을 확인해주세요.");
         } else if (!isPWValid) {
-            showToast("비밀번호는 8자이상,\n 영문+숫자+특수문자를 필수조합해주세요.");
+            showToast("비밀번호는 8자 이상, 영문+숫자+특수문자를 포함해야 합니다.");
         } else if (!isAssentChecked) {
             showToast("이용약관과 개인정보 정책에 동의해주세요.");
         } else {
@@ -158,14 +156,14 @@ public class SignupActivity extends AppCompatActivity implements View.OnClickLis
                 });
     }
 
-    // Toast 출력 메서드
+    // Toast 메시지 출력 메서드
     private void showToast(String message) {
         Toast toast = Toast.makeText(getApplicationContext(), message, Toast.LENGTH_SHORT);
         toast.setGravity(Gravity.CENTER, 0, 0);
         toast.show();
     }
 
-    // 회원가입 오류코드에 따른 오류원인 출력
+    // 회원가입 오류코드에 따른 오류 메시지 처리
     private void handleSignUpError(String errorCode) {
         switch (errorCode) {
             case "ERROR_EMAIL_ALREADY_IN_USE":
@@ -177,7 +175,7 @@ public class SignupActivity extends AppCompatActivity implements View.OnClickLis
         }
     }
 
-    // EditText(Email, PW) 유효성 검사
+    // 회원가입 버튼 활성화 여부 체크
     private void checkSignupButton() {
         String id = binding.etEmail.getText().toString();
         String pw = binding.etPW.getText().toString();
@@ -186,9 +184,9 @@ public class SignupActivity extends AppCompatActivity implements View.OnClickLis
         isAssentChecked = binding.cbAssent.isChecked();
 
         if (isIDValid && isPWValid && isAssentChecked) {
-            binding.btnSignupDo.setTextColor(Color.BLACK);
+            binding.btnSignupDo.setTextColor(Color.BLACK); // 모든 조건이 충족되면 버튼 활성화
         } else {
-            binding.btnSignupDo.setTextColor(Color.rgb(189, 189, 189));
+            binding.btnSignupDo.setTextColor(Color.rgb(189, 189, 189)); // 조건이 충족되지 않으면 버튼 비활성화
         }
     }
 }

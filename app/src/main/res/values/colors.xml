@@ -4,4 +4,6 @@
     <color name="white">#FFFFFFFF</color>
     <color name="grey">#ced4da</color>
     <color name="background">#fffafafa</color>
+    <color name="selected_item_background">#64B56B</color>
+    <color name="default_item_background">#FFFFFF</color>
 </resources>

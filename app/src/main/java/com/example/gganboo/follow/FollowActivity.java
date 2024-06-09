@@ -15,9 +15,9 @@ import com.google.android.material.tabs.TabLayoutMediator;
 
 public class FollowActivity extends AppCompatActivity {
 
-    private TabLayout tabLayout;
-    private ViewPager2 viewPager;
-    private Button btnBack;
+    private TabLayout tabLayout; // 탭 레이아웃
+    private ViewPager2 viewPager; // 뷰페이저
+    private Button btnBack; // 뒤로 가기 버튼
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -29,15 +29,16 @@ public class FollowActivity extends AppCompatActivity {
         btnBack.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                finish();
+                finish(); // 액티비티 종료
             }
         });
 
         // TabLayout과 ViewPager 설정
         tabLayout = findViewById(R.id.tabLayout);
         viewPager = findViewById(R.id.viewPager);
-        viewPager.setAdapter(new FollowListAdapter(this));
+        viewPager.setAdapter(new FollowListAdapter(this)); // 어댑터 설정
 
+        // TabLayout과 ViewPager를 연결하고 탭 텍스트 설정
         new TabLayoutMediator(tabLayout, viewPager, (tab, position) -> {
             if (position == 0) {
                 tab.setText("팔로잉");
@@ -56,6 +57,7 @@ public class FollowActivity extends AppCompatActivity {
         }
     }
 
+    // FragmentStateAdapter를 확장하여 탭에 따라 프래그먼트를 생성하는 어댑터 클래스
     private static class FollowListAdapter extends FragmentStateAdapter {
         public FollowListAdapter(@NonNull AppCompatActivity fragmentActivity) {
             super(fragmentActivity);
@@ -65,15 +67,15 @@ public class FollowActivity extends AppCompatActivity {
         @Override
         public Fragment createFragment(int position) {
             if (position == 0) {
-                return new FollowingFragment();
+                return new FollowingFragment(); // 팔로잉 프래그먼트 생성
             } else {
-                return new FollowerFragment();
+                return new FollowerFragment(); // 팔로워 프래그먼트 생성
             }
         }
 
         @Override
         public int getItemCount() {
-            return 2;
+            return 2; // 팔로잉, 팔로워 두 개의 탭
         }
     }
 }

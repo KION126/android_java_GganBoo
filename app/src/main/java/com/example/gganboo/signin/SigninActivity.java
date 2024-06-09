@@ -16,12 +16,10 @@ import androidx.core.view.ViewCompat;
 import androidx.core.view.WindowInsetsCompat;
 
 import com.example.gganboo.GganBooActivity;
-import com.example.gganboo.MainActivity;
 import com.example.gganboo.R;
 import com.example.gganboo.databinding.ActivitySigninBinding;
 import com.example.gganboo.emailauth.EmailActivity;
 import com.example.gganboo.profile.ProfileActivity;
-import com.example.gganboo.signup.SignupActivity;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseAuthException;
 import com.google.firebase.auth.FirebaseUser;
@@ -31,38 +29,33 @@ import com.google.firebase.database.FirebaseDatabase;
 
 public class SigninActivity extends AppCompatActivity implements View.OnClickListener {
 
-    private ActivitySigninBinding binding;
+    private ActivitySigninBinding binding; // View binding을 위한 변수
 
-    private FirebaseAuth mAuth;
+    private FirebaseAuth mAuth; // FirebaseAuth 인스턴스를 위한 변수
 
-    private static final String TAG = "SigninActivity";
+    private static final String TAG = "SigninActivity"; // 로그 태그
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        EdgeToEdge.enable(this);
+        EdgeToEdge.enable(this); // Edge-to-edge 디스플레이 설정
         binding = ActivitySigninBinding.inflate(getLayoutInflater());
-        setContentView(binding.getRoot());
+        setContentView(binding.getRoot()); // View binding을 통해 레이아웃 설정
 
-        // 로그인 확인 버튼
+        // 로그인 확인 버튼 클릭 리스너 설정
         binding.btnSigninDo.setOnClickListener(this);
-        // 비밀번호 찾기
+        // 비밀번호 찾기 클릭 리스너 설정
         binding.txtFindPW.setOnClickListener(this);
-
-        binding.btnTest.setOnClickListener(this);
-
         // Initialize Firebase Auth
         mAuth = FirebaseAuth.getInstance();
 
-        // EditText 띄어쓰기 필터 추가
+        // EditText 띄어쓰기 필터 추가 및 적용
         InputFilter noSpaceFilter = (source, start, end, dest, dstart, dend) -> {
             if (source != null && source.toString().contains(" ")) {
                 return source.toString().replace(" ", "");
             }
             return null;
         };
-
-        // 띄어쓰기 필터 적용
         binding.etEmail.setFilters(new InputFilter[]{noSpaceFilter});
         binding.etPW.setFilters(new InputFilter[]{noSpaceFilter});
 
@@ -160,7 +153,6 @@ public class SigninActivity extends AppCompatActivity implements View.OnClickLis
         }
     }
 
-
     // 비밀번호 재설정 이메일 전송
     private void sendPasswordResetEmail(String email) {
         mAuth.sendPasswordResetEmail(email)
@@ -174,14 +166,14 @@ public class SigninActivity extends AppCompatActivity implements View.OnClickLis
                 });
     }
 
-    // Toast출력 메서드
+    // Toast 출력 메서드
     private void showToast(String message) {
         Toast toast = Toast.makeText(getApplicationContext(), message, Toast.LENGTH_SHORT);
         toast.setGravity(Gravity.CENTER, 0, 0);
         toast.show();
     }
 
-    // 클릭 이벤트
+    // 클릭 이벤트 처리
     @Override
     public void onClick(View v) {
         // 로그인 확인 버튼 클릭 이벤트
@@ -192,18 +184,14 @@ public class SigninActivity extends AppCompatActivity implements View.OnClickLis
             if (email.isEmpty()){
                 showToast("이메일을 입력하세요.");
             } else if(password.isEmpty()){
-                showToast("비민번호를 입력하세요.");
-            }else {
+                showToast("비밀번호를 입력하세요.");
+            } else {
                 signInWithEmailAndPassword(email, password);
             }
         }
         // 비밀번호 찾기 클릭 이벤트
         else if (v == binding.txtFindPW) {
             handlePasswordReset();
-        }
-
-        else if(v == binding.btnTest){
-            signInWithEmailAndPassword("kg2001216@naver.com", "admin1!");
         }
     }
 
@@ -238,6 +226,8 @@ public class SigninActivity extends AppCompatActivity implements View.OnClickLis
                     }
                 });
     }
+
+    // 이메일 인증 메일 보내기
     private void sendEmailVerification(FirebaseUser user, String email, String password) {
         user.sendEmailVerification()
                 .addOnCompleteListener(this, task -> {
