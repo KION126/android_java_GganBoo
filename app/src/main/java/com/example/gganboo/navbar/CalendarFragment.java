@@ -156,7 +156,8 @@ public class CalendarFragment extends Fragment {
 
     // 유저의 할 일을 불러오는 메서드
     private void fetchTasks(String userId, CalendarDay date) {
-        mDatabase.child("Users").child(userId).child("tasks").child(date.getYear() + "" + date.getMonth() + date.getDay()).addValueEventListener(new ValueEventListener() {
+        mDatabase.child("Users").child(userId).child("tasks")
+                .child(date.getYear() + "" + date.getMonth() + date.getDay()).addValueEventListener(new ValueEventListener() {
             @Override
             public void onDataChange(DataSnapshot dataSnapshot) {
                 listTask.clear();
@@ -169,10 +170,20 @@ public class CalendarFragment extends Fragment {
                         t.setCheck(check);
                         listTask.add(t);
                     }
+                    toDoAdapter.notifyDataSetChanged();
+                } else {
+                    toDoAdapter.notifyDataSetChanged();
                 }
-                toDoAdapter.notifyDataSetChanged();
-            }
+                if (userId.equals(FirebaseAuth.getInstance().getCurrentUser().getUid())) {
+                    // 자신의 프로필이 클릭된 경우 자신의 캘린더와 할 일을 다시 보여줌
+                    toDoAdapter = new TodoAdapter(listTask, selectedDate, true);
+                } else {
+                    toDoAdapter = new TodoAdapter(listTask, selectedDate, false);
+                }
 
+                binding.recyclerView.setLayoutManager(new LinearLayoutManager(getContext()));
+                binding.recyclerView.setAdapter(toDoAdapter);
+            }
             @Override
             public void onCancelled(@NonNull DatabaseError error) {
                 // 오류 처리

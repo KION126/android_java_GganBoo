@@ -151,8 +151,8 @@ public class MyFragment extends Fragment implements View.OnClickListener {
             // 로그아웃 버튼 클릭 시
             FirebaseAuth.getInstance().signOut();
             intent = new Intent(getActivity(), MainActivity.class);
+            getActivity().finish(); // 현재 액티비티 종료
         }
         startActivity(intent); // 해당 액티비티로 이동
-        getActivity().finish(); // 현재 액티비티 종료
     }
 }

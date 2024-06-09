@@ -180,7 +180,8 @@ public class SignupActivity extends AppCompatActivity implements View.OnClickLis
         String id = binding.etEmail.getText().toString();
         String pw = binding.etPW.getText().toString();
         isIDValid = Patterns.EMAIL_ADDRESS.matcher(id).matches();
-        isPWValid = pw.length() >= 8 && pw.matches("^(?=.*[A-Za-z])(?=.*\\d)(?=.*[@$!%*#?&])[A-Za-z\\d@$!%*#?&]{8,}$") && !pw.matches(".*[ㄱ-ㅎㅏ-ㅣ가-힣]+.*");
+        isPWValid = pw.length() >= 8 && pw.matches("^(?=.*[A-Za-z])(?=.*\\d)(?=.*[@$!%*#?&])[A-Za-z\\d@$!%*#?&]{8,}$")
+                && !pw.matches(".*[ㄱ-ㅎㅏ-ㅣ가-힣]+.*");
         isAssentChecked = binding.cbAssent.isChecked();
 
         if (isIDValid && isPWValid && isAssentChecked) {

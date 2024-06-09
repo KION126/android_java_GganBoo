@@ -212,7 +212,8 @@ public class SigninActivity extends AppCompatActivity implements View.OnClickLis
                         Log.d(TAG, "Sign-in methods: " + task.getResult().getSignInMethods());
 
                         // 해당 이메일 주소가 회원 목록에 없는 경우
-                        if (task.getResult() != null && task.getResult().getSignInMethods() != null && task.getResult().getSignInMethods().isEmpty()) {
+                        if (task.getResult() != null && task.getResult().getSignInMethods()
+                                != null && task.getResult().getSignInMethods().isEmpty()) {
                             showToast("등록되지 않은 이메일입니다.\n 이메일을 확인해주세요.");
                         }
                         // 회원 목록에 있으면 sendPasswordResetEmail 메서드로 이동
