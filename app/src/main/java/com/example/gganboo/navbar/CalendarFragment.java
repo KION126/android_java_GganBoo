@@ -24,6 +24,7 @@ import com.prolificinteractive.materialcalendarview.CalendarDay;
 import com.prolificinteractive.materialcalendarview.MaterialCalendarView;
 import com.prolificinteractive.materialcalendarview.OnDateSelectedListener;
 import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.List;
 
 public class CalendarFragment extends Fragment {
