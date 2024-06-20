@@ -34,7 +34,7 @@ width="400" height="212"/>
 width="250" height="541"/>
 
 ◤달력(피드)<br>
-<img src="(https://github.com/KION126/GganBoo/assets/73977410/b508aa5a-9bc6-4dcd-b1e5-cac5d3e7d061" 
+<img src="https://github.com/KION126/GganBoo/assets/73977410/5fff0a2a-d8ba-4b28-8ebf-0f5db73d439a" 
 width="250" height="541"/>
 <img src="https://github.com/KION126/GganBoo/assets/73977410/51e7ddfd-0b45-498f-8fc2-351ed212551d"
 width="250" height="541"/>
@@ -47,6 +47,6 @@ width="250" height="541"/>
 <img src="https://github.com/KION126/GganBoo/assets/73977410/6add7f62-5d76-493f-889c-3e3011b8f949"
 width="250" height="541"/>
 
-◤예매상세화면<br>
+◤팔로잉, 팔로워 유저 목록<br>
 <img src="https://github.com/KION126/GganBoo/assets/73977410/a2019cdf-025d-4e68-9c81-9aa7953956b1"
 width="250" height="541"/>
