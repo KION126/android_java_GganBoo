@@ -15,7 +15,7 @@
 
 ◤로그인, 회원가입<br>
 <img src="https://github.com/KION126/GganBoo/assets/73977410/f3b82d57-adcd-4ced-8b4c-5fe6f84d40bd"
-width="541" height="250"/>
+width="250" height="541"/>
 <img src="https://github.com/KION126/java_GUI_InhaCinema/assets/73977410/a0223b90-cb09-40de-8a67-fccf91e12885"  width="541" height="250"/>
 
 ◤메인화면(영화 선택 화면)<br>
