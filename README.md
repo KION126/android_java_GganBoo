@@ -13,14 +13,21 @@
 ◤Tools<br>
 ![androidstudio](https://img.shields.io/badge/androidstudio-3DDC84?style=for-the-badge&logo=androidstudio&logoColor=white)
 
+◤메인화면<br>
+<img src="https://github.com/KION126/GganBoo/assets/73977410/fde8368e-86ba-4aa1-98a3-baae5fd0494a"
+width="250" height="541"/>
+
 ◤로그인, 회원가입<br>
 <img src="https://github.com/KION126/GganBoo/assets/73977410/f3b82d57-adcd-4ced-8b4c-5fe6f84d40bd"
 width="250" height="541"/>
 <img src="https://github.com/KION126/GganBoo/assets/73977410/77a389b4-79e5-466e-bd63-f25562c57da5" 
 width="250" height="541"/>
 
-◤메인화면(영화 선택 화면)<br>
-<img src="https://github.com/KION126/java_GUI_InhaCinema/assets/73977410/a6717c3f-509d-4c2a-b67b-458b049d8077"  width="500" height="266"/>
+◤이메일인증<br>
+<img src="https://github.com/KION126/GganBoo/assets/73977410/c76322cd-1b37-4ad4-97ce-ef3bd7aa3a0c" 
+width="250" height="541"/>
+<img src="https://github.com/KION126/GganBoo/assets/73977410/05d041d6-2926-432c-853c-0dee405cd32f" 
+width="250" height="541"/>
 
 ◤예매화면<br>
 <img src="https://github.com/KION126/java_GUI_InhaCinema/assets/73977410/a59ad892-e048-42f2-96d8-162fbc45a12b"  width="500" height="266"/>
