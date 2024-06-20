@@ -27,7 +27,7 @@ width="250" height="541"/>
 <img src="https://github.com/KION126/GganBoo/assets/73977410/c76322cd-1b37-4ad4-97ce-ef3bd7aa3a0c" 
 width="250" height="541"/>
 <img src="https://github.com/KION126/GganBoo/assets/73977410/05d041d6-2926-432c-853c-0dee405cd32f" 
-width="250" height="133"/>
+width="400" height="212"/>
 
 ◤예매화면<br>
 <img src="https://github.com/KION126/java_GUI_InhaCinema/assets/73977410/a59ad892-e048-42f2-96d8-162fbc45a12b"  width="500" height="266"/>
