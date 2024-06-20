@@ -8,10 +8,10 @@
 
 ◤Platforms & Languages<br>
 ![java](https://img.shields.io/badge/Java-ED8B00?style=for-the-badge&logo=openjdk&logoColor=white)
-![firebase](https://img.shields.io/badge/firebase-DD2C00?style=for-the-badge&logo=mysql&logoColor=white)
+![firebase](https://img.shields.io/badge/firebase-DD2C00?style=for-the-badge&logo=firebase&logoColor=white)
 
 ◤Tools<br>
-![androidstudio](https://img.shields.io/badge/androidstudio-3DDC84?style=for-the-badge&logo=mysql&logoColor=white)
+![androidstudio](https://img.shields.io/badge/androidstudio-3DDC84?style=for-the-badge&logo=androidstudio&logoColor=white)
 
 ◤로그인, 회원가입<br>
 <img src="https://github.com/KION126/java_GUI_InhaCinema/assets/73977410/387c24a7-3451-4976-a3ff-77edc3e94d61"  width="250" height="133"/>
